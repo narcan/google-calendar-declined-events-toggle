@@ -1,0 +1,110 @@
+name: Lint and Validate
+
+# Run on push to main, PRs, and manual trigger
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+    
+    - name: Validate manifest.json
+      run: |
+        echo "Validating manifest.json structure..."
+        node -e "
+          const fs = require('fs');
+          try {
+            const manifest = JSON.parse(fs.readFileSync('manifest.json', 'utf8'));
+            console.log('✅ manifest.json is valid JSON');
+            
+            // Check required fields
+            const required = ['manifest_version', 'name', 'version', 'description'];
+            const missing = required.filter(field => !manifest[field]);
+            
+            if (missing.length > 0) {
+              console.error('❌ Missing required fields:', missing.join(', '));
+              process.exit(1);
+            }
+            
+            console.log('✅ All required fields present');
+            console.log('Version:', manifest.version);
+            console.log('Name:', manifest.name);
+            
+          } catch (error) {
+            console.error('❌ manifest.json validation failed:', error.message);
+            process.exit(1);
+          }
+        "
+    
+    - name: Check file structure
+      run: |
+        echo "Checking required files exist..."
+        files=("manifest.json" "content.js" "styles.css" "README.md" "LICENSE")
+        missing=()
+        
+        for file in "${files[@]}"; do
+          if [ -f "$file" ]; then
+            echo "✅ $file exists"
+          else
+            echo "❌ $file is missing"
+            missing+=("$file")
+          fi
+        done
+        
+        if [ ${#missing[@]} -ne 0 ]; then
+          echo "Missing files: ${missing[*]}"
+          exit 1
+        fi
+    
+    - name: Check JavaScript syntax
+      run: |
+        echo "Checking JavaScript syntax..."
+        node -c content.js && echo "✅ content.js syntax is valid" || exit 1
+    
+    - name: Check for console.log statements
+      run: |
+        echo "Checking for debug statements..."
+        if grep -n "console\.log\|console\.debug" content.js; then
+          echo "⚠️ Warning: Found console.log statements (consider removing for production)"
+          # Don't fail, just warn
+        else
+          echo "✅ No console.log statements found"
+        fi
+    
+    - name: Check CSS validity (basic)
+      run: |
+        echo "Basic CSS check..."
+        if grep -q "}" styles.css && grep -q "{" styles.css; then
+          echo "✅ styles.css appears to be valid CSS"
+        else
+          echo "❌ styles.css may have syntax issues"
+          exit 1
+        fi
+    
+    - name: Check for TODOs
+      run: |
+        echo "Checking for TODO comments..."
+        if grep -rn "TODO\|FIXME\|XXX\|HACK" --include="*.js" --include="*.css" .; then
+          echo "⚠️ Found TODO/FIXME comments"
+        else
+          echo "✅ No TODO comments found"
+        fi
+    
+    - name: Summary
+      run: |
+        echo "================================"
+        echo "✅ All validation checks passed!"
+        echo "================================"

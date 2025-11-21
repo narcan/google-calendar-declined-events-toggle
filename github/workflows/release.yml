@@ -1,0 +1,97 @@
+name: Create Release Package
+
+# Run when a new tag is pushed (e.g., v1.0.0)
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version number (e.g., 1.0.0)'
+        required: true
+        type: string
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+    
+    - name: Get version
+      id: version
+      run: |
+        if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+          echo "version=${{ github.event.inputs.version }}" >> $GITHUB_OUTPUT
+        else
+          echo "version=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+        fi
+    
+    - name: Create distribution package
+      run: |
+        echo "Creating release package..."
+        mkdir -p dist
+        
+        # Copy extension files (excluding development files)
+        cp manifest.json dist/
+        cp content.js dist/
+        cp styles.css dist/
+        cp README.md dist/
+        cp LICENSE dist/
+        
+        echo "✅ Distribution package created in dist/"
+    
+    - name: Create ZIP archive
+      run: |
+        cd dist
+        zip -r ../google-calendar-declined-events-toggle-v${{ steps.version.outputs.version }}.zip .
+        cd ..
+        echo "✅ ZIP archive created"
+    
+    - name: Generate checksums
+      run: |
+        sha256sum google-calendar-declined-events-toggle-v${{ steps.version.outputs.version }}.zip > checksums.txt
+        echo "✅ Checksums generated"
+    
+    - name: Create Release
+      uses: softprops/action-gh-release@v1
+      if: startsWith(github.ref, 'refs/tags/')
+      with:
+        files: |
+          google-calendar-declined-events-toggle-v${{ steps.version.outputs.version }}.zip
+          checksums.txt
+        body: |
+          ## Installation
+          
+          1. Download the ZIP file below
+          2. Unzip the archive
+          3. Go to `chrome://extensions/`
+          4. Enable "Developer mode"
+          5. Click "Load unpacked" and select the unzipped folder
+          
+          ## What's New
+          
+          See [CHANGELOG.md](CHANGELOG.md) for details.
+          
+          ## Verification
+          
+          Verify the integrity of the download:
+          ```bash
+          sha256sum google-calendar-declined-events-toggle-v${{ steps.version.outputs.version }}.zip
+          ```
+          Compare with `checksums.txt`
+        draft: false
+        prerelease: false
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: extension-package-v${{ steps.version.outputs.version }}
+        path: |
+          google-calendar-declined-events-toggle-v${{ steps.version.outputs.version }}.zip
+          checksums.txt
+        retention-days: 90

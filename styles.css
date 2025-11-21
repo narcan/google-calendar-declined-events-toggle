@@ -1,0 +1,179 @@
+/* Hide declined events when class is applied */
+.declined-event-hidden {
+  display: none !important;
+}
+
+/* Additional hiding for nested structures */
+body.hide-declined-events .declined-event-hidden * {
+  display: none !important;
+}
+
+/* Toggle button container */
+.declined-toggle-container {
+  display: inline-flex;
+  margin-left: 12px;
+  z-index: 1000;
+  flex-shrink: 0; /* Prevent shrinking on small screens */
+}
+
+/* Toggle label */
+.declined-toggle-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  user-select: none;
+  background: white;
+  padding: 8px 12px;
+  border-radius: 20px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+  transition: box-shadow 0.2s, background-color 0.2s;
+  white-space: nowrap; /* Prevent text wrapping */
+}
+
+.declined-toggle-label:hover {
+  box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+  background: #f8f9fa;
+}
+
+.declined-toggle-label:active {
+  background: #f1f3f4;
+}
+
+/* Toggle text */
+.declined-toggle-text {
+  font-size: 14px;
+  color: #3c4043;
+  font-family: 'Google Sans', Roboto, Arial, sans-serif;
+  font-weight: 500;
+}
+
+/* Hide the default checkbox */
+.declined-toggle-label input[type="checkbox"] {
+  display: none;
+}
+
+/* Toggle slider */
+.declined-toggle-slider {
+  position: relative;
+  width: 40px;
+  height: 20px;
+  background-color: #ccc;
+  border-radius: 20px;
+  transition: background-color 0.3s;
+  flex-shrink: 0; /* Prevent slider from shrinking */
+}
+
+.declined-toggle-slider::before {
+  content: '';
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  left: 2px;
+  top: 2px;
+  background-color: white;
+  border-radius: 50%;
+  transition: transform 0.3s;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+}
+
+/* Checked state */
+.declined-toggle-label input[type="checkbox"]:checked + .declined-toggle-slider {
+  background-color: #1a73e8;
+}
+
+.declined-toggle-label input[type="checkbox"]:checked + .declined-toggle-slider::before {
+  transform: translateX(20px);
+}
+
+/* Focus state for accessibility */
+.declined-toggle-label:focus-within {
+  outline: 2px solid #1a73e8;
+  outline-offset: 2px;
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .declined-toggle-label {
+    background: #2d2e30;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.4), 0 1px 2px rgba(0,0,0,0.6);
+  }
+  
+  .declined-toggle-label:hover {
+    background: #35363a;
+  }
+  
+  .declined-toggle-label:active {
+    background: #3c3d41;
+  }
+  
+  .declined-toggle-text {
+    color: #e8eaed;
+  }
+  
+  .declined-toggle-slider {
+    background-color: #5f6368;
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .declined-toggle-container {
+    margin-left: 8px;
+  }
+  
+  .declined-toggle-label {
+    padding: 6px 10px;
+    gap: 8px;
+  }
+  
+  .declined-toggle-text {
+    font-size: 13px;
+  }
+  
+  .declined-toggle-slider {
+    width: 36px;
+    height: 18px;
+  }
+  
+  .declined-toggle-slider::before {
+    width: 14px;
+    height: 14px;
+  }
+  
+  .declined-toggle-label input[type="checkbox"]:checked + .declined-toggle-slider::before {
+    transform: translateX(18px);
+  }
+}
+
+/* Very small screens - show icon only */
+@media (max-width: 480px) {
+  .declined-toggle-text {
+    display: none;
+  }
+  
+  .declined-toggle-label {
+    padding: 6px;
+    gap: 0;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .declined-toggle-label {
+    border: 2px solid currentColor;
+  }
+  
+  .declined-toggle-slider {
+    border: 1px solid currentColor;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .declined-toggle-slider,
+  .declined-toggle-slider::before,
+  .declined-toggle-label {
+    transition: none;
+  }
+}
