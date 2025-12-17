@@ -27,7 +27,7 @@ body.hide-declined-events .declined-event-hidden * {
   padding: 8px 12px;
   border-radius: 20px;
   box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
-  transition: box-shadow 0.2s, background-color 0.2s;
+  transition: box-shadow 0.2s, background-color 0.2s, opacity 0.2s;
   white-space: nowrap; /* Prevent text wrapping */
 }
 
@@ -38,6 +38,22 @@ body.hide-declined-events .declined-event-hidden * {
 
 .declined-toggle-label:active {
   background: #f1f3f4;
+}
+
+/* Loading state */
+.declined-toggle-label.loading {
+  opacity: 0.6;
+  cursor: wait;
+  pointer-events: none;
+}
+
+.declined-toggle-label.loading .declined-toggle-slider {
+  animation: pulse 1s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
 }
 
 /* Toggle text */

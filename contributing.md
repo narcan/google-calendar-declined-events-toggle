@@ -14,7 +14,7 @@ If the extension stops working or behaves unexpectedly:
    - Steps to reproduce
    - Chrome version (`chrome://version`)
    - Screenshot if relevant
-   - Browser console errors (F12 → Console tab)
+   - Browser console errors (F12 â†’ Console tab)
 3. **Create an issue** with:
    - Clear title describing the bug
    - Reproduction steps
@@ -96,15 +96,15 @@ Use clear, descriptive commit messages:
 
 ```
 Good:
-✅ Fix: Handle declined events in month view
-✅ Feature: Add keyboard shortcut support
-✅ Performance: Reduce observer overhead by 40%
-✅ Docs: Update installation instructions
+âœ… Fix: Handle declined events in month view
+âœ… Feature: Add keyboard shortcut support
+âœ… Performance: Reduce observer overhead by 40%
+âœ… Docs: Update installation instructions
 
 Bad:
-❌ fix bug
-❌ update code
-❌ changes
+âŒ fix bug
+âŒ update code
+âŒ changes
 ```
 
 Format: `Type: Brief description`
@@ -207,4 +207,4 @@ Contributors will be acknowledged in:
 - Release notes
 - GitHub's contributor graph
 
-Thank you for helping make this extension better! 🎉
+Thank you for helping make this extension better! ðŸŽ‰
