@@ -228,7 +228,14 @@ The extension may stop working if Google updates their Calendar interface. Maint
 
 ## Version History
 
-### v2.0.0 (Current)
+### v2.0.1 (Current)
+- **Improved selector stability** - Prioritize semantic selectors over obfuscated class names
+- Added date pattern matching for button placement
+- Removed unnecessary obfuscated selector fallbacks
+- Optimized search performance for faster button appearance
+- Filter button now uses only ARIA label (more stable)
+
+### v2.0.0
 - **Complete rewrite** - Now automates native "Show declined events" setting
 - Added automatic sync when returning from Settings page
 - Improved reliability with native menu interaction

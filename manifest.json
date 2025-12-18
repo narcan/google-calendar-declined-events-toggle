@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Hide Declined Calendar Events",
-  "version": "2.0",
+  "version": "2.0.1",
   "description": "Toggle visibility of declined events in Google Calendar",
   "permissions": ["storage"],
   "content_scripts": [

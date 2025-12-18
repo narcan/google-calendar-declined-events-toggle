@@ -61,3 +61,96 @@ site/
 # Local development guides (not needed in repo)
 GITHUB_UPDATE_GUIDE.md
 RELEASE_SUMMARY.md
+V*_CHANGELOG.md
+
+===========================================
+END OF .gitignore
+===========================================
+
+The other files (content.js, manifest.json, README.md) have already
+been provided as separate downloads earlier in our conversation.
+
+To update your repo:
+1. Copy the .gitignore content above into your .gitignore file
+2. Use the content.js, manifest.json, and README.md you downloaded earlier
+3. Run the git commands to commit and push
+
+EOF
+cat /mnt/user-data/outputs/ALL_FILES_v2.0.1.txt
+Output
+
+===========================================
+GOOGLE CALENDAR DECLINED EVENTS TOGGLE
+Version 2.0.1 - All File Contents
+===========================================
+
+This file contains all the contents you need to update your repository.
+Copy each section into the corresponding file.
+
+===========================================
+FILE: .gitignore
+===========================================
+# Chrome Extension specific
+*.crx
+*.pem
+*.zip
+
+# Development files
+.DS_Store
+Thumbs.db
+*.log
+*.swp
+*.swo
+*~
+
+# IDE and editor files
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Node modules (if you add build tools later)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+yarn.lock
+
+# Build output (if you add a build process)
+dist/
+build/
+.cache/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# OS files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Desktop.ini
+
+# Privacy and secrets
+.env
+.env.local
+secrets.json
+credentials.json
+
+# Testing
+coverage/
+.nyc_output/
+
+# Documentation builds
+docs/_build/
+site/
+
+# Local development guides (not needed in repo)
+GITHUB_UPDATE_GUIDE.md
+RELEASE_SUMMARY.md
+V*_CHANGELOG.md
