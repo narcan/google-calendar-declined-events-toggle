@@ -45,10 +45,8 @@ function createToggleButton() {
   // Check if button already exists
   if (document.getElementById('declined-toggle')) return;
 
-  // Find the parent container that holds the date navigation section
-  const dateNavigationWrapper = document.querySelector('div[jscontroller="qoxFud"]') ||
-                                  document.querySelector('[jsaction*="qiUtGf"]') ||
-                                  document.querySelector('.mrYXIc');
+  // Find the parent container using multiple stable strategies
+  const dateNavigationWrapper = findDateNavigation();
   
   if (!dateNavigationWrapper) {
     return;
@@ -124,14 +122,69 @@ function createToggleButton() {
   });
 }
 
+// Find date navigation using multiple stable strategies
+function findDateNavigation() {
+  // Strategy 1: Find by "Today" button (ARIA label - most stable)
+  const todayButton = document.querySelector('button[aria-label="Today"]') ||
+                      document.querySelector('button[data-tooltip="Today"]');
+  
+  if (todayButton) {
+    // Navigate up to find the date navigation container
+    const dateNav = todayButton.closest('[role="toolbar"]') || 
+                    todayButton.parentElement?.parentElement;
+    if (dateNav) return dateNav;
+  }
+
+  // Strategy 2: Find by view switcher (role attribute - stable)
+  const viewSwitcher = document.querySelector('[role="radiogroup"]');
+  if (viewSwitcher) {
+    const dateNav = viewSwitcher.previousElementSibling;
+    if (dateNav) return dateNav;
+  }
+
+  // Strategy 3: Find by date pattern in text (semantic - fairly stable)
+  // Look for "December 2024" style text in likely containers first
+  const dateElement = 
+    // First try: divs with controllers (more specific, faster)
+    Array.from(document.querySelectorAll('div[jscontroller]')).find(el => {
+      const text = el.textContent || '';
+      return /\w+\s+\d{4}/.test(text) && text.length < 100;
+    }) ||
+    // Fallback: any element with date pattern (broader search)
+    Array.from(document.querySelectorAll('header div, header span, h1, h2')).find(el => {
+      const text = el.textContent || '';
+      return /\w+\s+\d{4}/.test(text) && text.length < 100;
+    });
+  
+  if (dateElement) {
+    // The date element itself might be the nav, or we need to go up
+    if (dateElement.querySelector('button') || dateElement.children.length > 2) {
+      return dateElement; // This is likely the nav container
+    }
+    const dateNav = dateElement.parentElement;
+    if (dateNav) return dateNav;
+  }
+
+  // Strategy 4: Fallback to working selectors (will break eventually, but works today)
+  // This ensures the extension works NOW while strategies 1-3 provide future stability
+  const fallbackNav = document.querySelector('div[jscontroller="qoxFud"]') ||
+                      document.querySelector('[jsaction*="qiUtGf"]') ||
+                      document.querySelector('.mrYXIc');
+  
+  if (fallbackNav) return fallbackNav;
+
+  // If all strategies fail, Calendar UI has changed significantly
+  console.warn('[Declined Events] Could not find date navigation - Calendar UI may have changed');
+  return null;
+}
+
 // Find and click the native "Show declined events" checkbox
 async function toggleNativeCheckbox(targetState) {
   isTogglingNative = true;
   
   try {
     // Find the "Filter and view" button (the funnel icon)
-    const filterButton = document.querySelector('[aria-label="Filter and view"]') ||
-                         document.querySelector('[jsname="JZwYh"]');
+    const filterButton = document.querySelector('[aria-label="Filter and view"]');
     
     if (!filterButton) {
       console.error('[Declined Events] Could not find "Filter and view" button');
@@ -192,8 +245,7 @@ async function verifyNativeSetting(expectedState) {
   try {
     console.log('[Declined Events] Verifying setting is:', expectedState);
     
-    const filterButton = document.querySelector('[aria-label="Filter and view"]') ||
-                         document.querySelector('[jsname="JZwYh"]');
+    const filterButton = document.querySelector('[aria-label="Filter and view"]');
     
     if (!filterButton) return false;
     
@@ -239,9 +291,8 @@ function findNativeCheckboxInMenu() {
       const menuItems = document.querySelectorAll('[role="menuitemcheckbox"]');
       
       for (const item of menuItems) {
-        // Check the text content
-        const textElement = item.querySelector('[jsname="K4r5Ff"]') || item;
-        const text = textElement.textContent || '';
+        // Check the text content directly from the menu item
+        const text = item.textContent || '';
         
         if (text.includes('Show declined events') || 
             text.includes('declined events') ||
@@ -250,14 +301,6 @@ function findNativeCheckboxInMenu() {
           resolve(item);
           return;
         }
-      }
-      
-      // Backup: Try finding by jsname attribute (from network capture)
-      const byJsName = document.querySelector('[jsname="nXdsbe"]');
-      if (byJsName && byJsName.getAttribute('role') === 'menuitemcheckbox') {
-        clearInterval(findCheckbox);
-        resolve(byJsName);
-        return;
       }
       
       if (currentAttempt >= attempts) {
@@ -339,8 +382,7 @@ async function syncWithNativeSetting() {
     isTogglingNative = true;
     
     // Find the "Filter and view" button
-    const filterButton = document.querySelector('[aria-label="Filter and view"]') ||
-                         document.querySelector('[jsname="JZwYh"]');
+    const filterButton = document.querySelector('[aria-label="Filter and view"]');
     
     if (!filterButton) {
       return;
