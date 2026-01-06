@@ -2,6 +2,12 @@
 
 A Chrome extension that adds a toggle button to Google Calendar, allowing you to quickly show/hide declined events by automating the native "Show declined events" setting.
 
+## Screenshot
+
+![Toggle Button](images/screenshot.png)
+
+*The "Declined Events" toggle appears next to the date navigation in Google Calendar.*
+
 > 🤖 **Built with AI:** This extension was collaboratively developed with Claude Sonnet 4.5, showcasing the power of AI-assisted development for solving real workflow problems.
 
 ## Features
