@@ -28,6 +28,7 @@ A Chrome extension that adds a toggle button to Google Calendar, allowing you to
    - `manifest.json`
    - `content.js`
    - `styles.css`
+   - `icons/` directory (all PNGs referenced by `manifest.json`)
 
 2. **Create extension folder:**
    ```bash
@@ -35,7 +36,18 @@ A Chrome extension that adds a toggle button to Google Calendar, allowing you to
    cd calendar-declined-toggle
    ```
 
-3. **Place the three files** in the folder
+3. **Place the three files and the `icons/` folder** in the extension folder. Your tree should look like:
+   ```
+   calendar-declined-toggle/
+   ├── manifest.json
+   ├── content.js
+   ├── styles.css
+   └── icons/
+       ├── icon-16.png
+       ├── icon-32.png
+       ├── icon-48.png
+       └── icon-128.png
+   ```
 
 4. **Load in Chrome:**
    - Open Chrome and go to `chrome://extensions/`
@@ -195,8 +207,29 @@ calendar-declined-toggle/
 ├── manifest.json       # Extension configuration
 ├── content.js          # Main logic (menu automation, sync)
 ├── styles.css          # Toggle button styling
-└── README.md          # This file
+├── icons/              # Extension icons (color + monochrome, 16/32/48/128)
+│   ├── icon-16.png
+│   ├── icon-32.png
+│   ├── icon-48.png
+│   ├── icon-128.png
+│   ├── icon-16-mono.png
+│   ├── icon-32-mono.png
+│   ├── icon-48-mono.png
+│   ├── icon-128-mono.png
+│   ├── icon.svg        # Master color SVG (128×128 viewBox)
+│   └── icon-mono.svg   # Master monochrome SVG
+└── README.md           # This file
 ```
+
+### Icons
+
+The extension ships with a calendar icon depicting two stacked event rectangles, the bottom one struck through with a diagonal line to signal the declined event being hidden.
+
+- **Color set** — `icons/icon-16.png`, `icon-32.png`, `icon-48.png`, `icon-128.png`. Google Calendar blue (#4285F4) body, white event rectangles outlined in blue, red (#EA4335) diagonal slash on the lower event.
+- **Monochrome set** — `icons/icon-16-mono.png` through `icon-128-mono.png`. Same composition in neutral gray (#5F6368) for contexts where the color version clashes.
+- **Master SVGs** — `icons/icon.svg` and `icons/icon-mono.svg`. 128×128 viewBox source files. Re-rasterize with any SVG tool (`cairosvg`, `rsvg-convert`, Figma, etc.) if additional sizes are needed.
+
+The color set is referenced in `manifest.json` as the top-level extension icons, which appear in `chrome://extensions/`, the extensions management page, and (when published) the Chrome Web Store listing. The monochrome set and master SVGs ship with the extension as design assets but are not currently referenced by the manifest.
 
 ### Making Changes
 
