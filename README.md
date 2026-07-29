@@ -230,6 +230,26 @@ The color set is referenced in `manifest.json` as the top-level extension icons,
 
 Open Chrome DevTools (F12) while on Google Calendar. The extension logs errors to help with debugging.
 
+### Releasing
+
+Releases are cut with the **Cut Release** workflow, not manual `git tag` commands:
+
+1. Merge whatever changes should ship into `main`
+2. Go to the repo's **Actions** tab → **Cut Release** → **Run workflow**
+3. Enter a version number (e.g. `2.0.5`, no `v` prefix) and run it
+
+That workflow bumps `manifest.json` and pushes a matching tag, which in turn triggers `release.yml` to build the zip, create the GitHub Release, and publish to the Chrome Web Store — no local git commands needed.
+
+**One-time setup for the Chrome Web Store publish step** (skipped automatically until this is done): the repo needs four secrets under **Settings → Secrets and variables → Actions**:
+
+| Secret | Where it comes from |
+|---|---|
+| `CHROME_EXTENSION_ID` | The item ID shown in the [Chrome Web Store Developer Dashboard](https://chrome.google.com/webstore/devconsole) for this extension |
+| `CHROME_CLIENT_ID` / `CHROME_CLIENT_SECRET` | A Google Cloud project with the **Chrome Web Store API** enabled, and an OAuth client (type: Desktop app) created under **APIs & Services → Credentials** |
+| `CHROME_REFRESH_TOKEN` | Obtained once via the [OAuth 2.0 Playground](https://developers.google.com/oauthplayground): use your own client ID/secret (gear icon), authorize scope `https://www.googleapis.com/auth/chromewebstore`, then exchange the auth code for tokens |
+
+The Google Cloud OAuth app can stay in "Testing" mode with just your own account added as a test user — no Google app-verification review needed, since only you ever authorize it.
+
 ## Contributing
 
 Found a bug or have an improvement?

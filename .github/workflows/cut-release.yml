@@ -1,0 +1,47 @@
+name: Cut Release
+
+# The human-gated "release button": run this manually from the Actions tab
+# with a version number. It bumps manifest.json and pushes a matching tag;
+# the tag push then triggers release.yml, which builds the zip, creates the
+# GitHub Release, and publishes to the Chrome Web Store.
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version number to release (e.g. 2.0.5, no "v" prefix)'
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  bump-and-tag:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout main
+      uses: actions/checkout@v4
+      with:
+        ref: main
+
+    - name: Bump manifest.json version
+      run: |
+        node -e "
+          const fs = require('fs');
+          const manifest = JSON.parse(fs.readFileSync('manifest.json', 'utf8'));
+          manifest.version = '${{ inputs.version }}';
+          fs.writeFileSync('manifest.json', JSON.stringify(manifest, null, 2) + '\n');
+        "
+
+    - name: Commit version bump
+      run: |
+        git config user.name "github-actions[bot]"
+        git config user.email "github-actions[bot]@users.noreply.github.com"
+        git add manifest.json
+        git commit -m "Release v${{ inputs.version }}"
+        git push origin HEAD:main
+
+    - name: Create and push tag
+      run: |
+        git tag -a "v${{ inputs.version }}" -m "v${{ inputs.version }}"
+        git push origin "v${{ inputs.version }}"
