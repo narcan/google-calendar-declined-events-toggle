@@ -22,38 +22,24 @@ A Chrome extension that adds a toggle button to Google Calendar, allowing you to
 
 ## Installation
 
-### From Source (Development)
+### From a Release (Recommended)
 
-1. **Download the extension files:**
-   - `manifest.json`
-   - `content.js`
-   - `styles.css`
-   - `icons/` directory (all PNGs referenced by `manifest.json`)
-
-2. **Create extension folder:**
-   ```bash
-   mkdir calendar-declined-toggle
-   cd calendar-declined-toggle
-   ```
-
-3. **Place the three files and the `icons/` folder** in the extension folder. Your tree should look like:
-   ```
-   calendar-declined-toggle/
-   ├── manifest.json
-   ├── content.js
-   ├── styles.css
-   └── icons/
-       ├── icon-16.png
-       ├── icon-32.png
-       ├── icon-48.png
-       └── icon-128.png
-   ```
-
-4. **Load in Chrome:**
+1. **Download the latest release ZIP** from the [Releases page](../../releases/latest).
+2. **Unzip it** — you'll get a folder containing `manifest.json`, `content.js`, `styles.css`, `icons/`, etc.
+3. **Load in Chrome:**
    - Open Chrome and go to `chrome://extensions/`
    - Enable "Developer mode" (toggle in top-right)
    - Click "Load unpacked"
-   - Select your extension folder
+   - Select the unzipped folder
+
+### From Source (Development)
+
+1. **Clone or download this repository.**
+2. **Load in Chrome:**
+   - Open Chrome and go to `chrome://extensions/`
+   - Enable "Developer mode" (toggle in top-right)
+   - Click "Load unpacked"
+   - Select the repository folder (the one containing `manifest.json`)
 
 ### Chrome Web Store (Future)
 *Not yet published*
@@ -267,26 +253,7 @@ The extension may stop working if Google updates their Calendar interface. Maint
 
 ## Version History
 
-### v2.0.1 (Current)
-- **Improved selector stability** - Prioritize semantic selectors over obfuscated class names
-- Added date pattern matching for button placement
-- Removed unnecessary obfuscated selector fallbacks
-- Optimized search performance for faster button appearance
-- Filter button now uses only ARIA label (more stable)
-
-### v2.0.0
-- **Complete rewrite** - Now automates native "Show declined events" setting
-- Added automatic sync when returning from Settings page
-- Improved reliability with native menu interaction
-- Better backdrop cleanup to prevent screen dimming issues
-- Added error handling for Chrome extension context
-- Removed all DOM manipulation and CSS hiding
-
-### v1.0.0
-- Initial release with DOM manipulation approach
-- Basic show/hide functionality using CSS
-- Dark mode support
-- Responsive design
+See [CHANGELOG.md](CHANGELOG.md).
 
 ## Support
 
