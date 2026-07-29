@@ -198,6 +198,8 @@ Google may update Calendar's menu structure, breaking the extension temporarily:
 - ✅ Settings stored locally in Chrome sync storage
 - ✅ Open source - inspect the code yourself
 
+See [PRIVACY.md](PRIVACY.md) for the full privacy policy.
+
 ## Development
 
 ### File Structure
