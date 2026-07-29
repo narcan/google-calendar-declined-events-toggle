@@ -11,6 +11,15 @@ on:
         description: 'Full version tag, e.g. v2.0.6'
         required: true
         type: string
+    secrets:
+      CHROME_EXTENSION_ID:
+        required: false
+      CHROME_CLIENT_ID:
+        required: false
+      CHROME_CLIENT_SECRET:
+        required: false
+      CHROME_REFRESH_TOKEN:
+        required: false
 
 permissions:
   contents: write
