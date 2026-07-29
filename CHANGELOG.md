@@ -2,6 +2,9 @@
 
 All notable changes to this project are documented here.
 
+## [2.0.6]
+- No functional changes — the first "Cut Release" button run (v2.0.5) pushed its tag using the workflow's own `GITHUB_TOKEN`, which GitHub Actions deliberately excludes from triggering other workflows, so `release.yml` never fired for it. Fixed in the workflow itself (see repo history); this version bump gives it a clean tag to build from.
+
 ## [2.0.4]
 - No functional changes — `v2.0.2` and `v2.0.3` were tagged against a commit that predated the release-workflow permissions fix, so their release builds failed and/or were mislabeled. This version bump gives the fixed workflow a clean tag to build from.
 
