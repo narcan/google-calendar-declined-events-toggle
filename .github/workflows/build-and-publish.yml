@@ -14,6 +14,8 @@ on:
     secrets:
       CHROME_EXTENSION_ID:
         required: false
+      CHROME_PUBLISHER_ID:
+        required: false
       CHROME_CLIENT_ID:
         required: false
       CHROME_CLIENT_SECRET:
@@ -113,12 +115,15 @@ jobs:
       if: ${{ env.CHROME_PUBLISH_CONFIGURED == 'true' }}
       env:
         EXTENSION_ID: ${{ secrets.CHROME_EXTENSION_ID }}
+        PUBLISHER_ID: ${{ secrets.CHROME_PUBLISHER_ID }}
         CLIENT_ID: ${{ secrets.CHROME_CLIENT_ID }}
         CLIENT_SECRET: ${{ secrets.CHROME_CLIENT_SECRET }}
         REFRESH_TOKEN: ${{ secrets.CHROME_REFRESH_TOKEN }}
       run: |
         npx --yes chrome-webstore-upload-cli upload \
           --source google-calendar-declined-events-toggle-${{ inputs.version }}.zip \
-          --extension-id "$EXTENSION_ID"
+          --extension-id "$EXTENSION_ID" \
+          --publisher-id "$PUBLISHER_ID"
         npx --yes chrome-webstore-upload-cli publish \
-          --extension-id "$EXTENSION_ID"
+          --extension-id "$EXTENSION_ID" \
+          --publisher-id "$PUBLISHER_ID"
