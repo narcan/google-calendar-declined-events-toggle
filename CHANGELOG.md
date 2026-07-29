@@ -2,6 +2,9 @@
 
 All notable changes to this project are documented here.
 
+## [2.0.3]
+- Fixed the release workflow's `GITHUB_TOKEN` lacking permission to create GitHub Releases (repo defaults to a read-only token; the workflow now explicitly requests `contents: write`)
+
 ## [2.0.2]
 - Fixed the release pipeline: workflows lived in `github/workflows/` instead of `.github/workflows/`, so GitHub Actions never ran them
 - Release ZIP now includes `icons/` (previously omitted, which broke the packaged extension) and `CHANGELOG.md`
