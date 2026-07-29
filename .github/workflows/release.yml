@@ -18,7 +18,7 @@ jobs:
     
     steps:
     - name: Checkout code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
     
     - name: Get version
       id: version
@@ -40,7 +40,9 @@ jobs:
         cp styles.css dist/
         cp README.md dist/
         cp LICENSE dist/
-        
+        cp CHANGELOG.md dist/
+        cp -r icons dist/icons
+
         echo "✅ Distribution package created in dist/"
     
     - name: Create ZIP archive
@@ -88,7 +90,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     
     - name: Upload artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: extension-package-v${{ steps.version.outputs.version }}
         path: |
