@@ -2,6 +2,11 @@
 
 All notable changes to this project are documented here.
 
+## [2.0.2]
+- Fixed the release pipeline: workflows lived in `github/workflows/` instead of `.github/workflows/`, so GitHub Actions never ran them
+- Release ZIP now includes `icons/` (previously omitted, which broke the packaged extension) and `CHANGELOG.md`
+- Simplified installation instructions to lead with downloading a release ZIP instead of manually copying files
+
 ## [2.0.1]
 - Improved selector stability - prioritize semantic selectors over obfuscated class names
 - Added date pattern matching for button placement
