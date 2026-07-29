@@ -27,6 +27,8 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      CHROME_PUBLISH_CONFIGURED: ${{ secrets.CHROME_CLIENT_ID != '' }}
 
     steps:
     - name: Checkout code
@@ -108,7 +110,7 @@ jobs:
     # are configured in the repo's Actions secrets -- see the "Releasing"
     # section in README.md for setup steps.
     - name: Publish to Chrome Web Store
-      if: ${{ secrets.CHROME_CLIENT_ID != '' }}
+      if: ${{ env.CHROME_PUBLISH_CONFIGURED == 'true' }}
       env:
         CHROME_EXTENSION_ID: ${{ secrets.CHROME_EXTENSION_ID }}
         CHROME_CLIENT_ID: ${{ secrets.CHROME_CLIENT_ID }}
