@@ -1,8 +1,10 @@
 name: Create Release Package
 
-# Run when a new tag is pushed (e.g., v1.0.0). Tags are normally pushed by
-# the "Cut Release" workflow (see cut-release.yml), which is the intended
-# way to ship a new version, but a manually-pushed tag works the same way.
+# Run when a new tag is pushed (e.g., v1.0.0) -- e.g. by a human pushing a
+# tag with their own git credentials. The "Cut Release" workflow (see
+# cut-release.yml) is the intended way to ship a new version, and calls
+# build-and-publish.yml directly rather than relying on this trigger,
+# since a tag pushed using the default GITHUB_TOKEN does not fire it.
 on:
   push:
     tags:
@@ -12,105 +14,8 @@ permissions:
   contents: write
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-
-    - name: Get version
-      id: version
-      run: echo "version=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
-
-    - name: Create distribution package
-      run: |
-        echo "Creating release package..."
-        mkdir -p dist
-
-        # Copy extension files (excluding development files)
-        cp manifest.json dist/
-        cp content.js dist/
-        cp styles.css dist/
-        cp README.md dist/
-        cp LICENSE dist/
-        cp CHANGELOG.md dist/
-        cp -r icons dist/icons
-
-        echo "✅ Distribution package created in dist/"
-
-    - name: Create ZIP archive
-      run: |
-        cd dist
-        zip -r ../google-calendar-declined-events-toggle-v${{ steps.version.outputs.version }}.zip .
-        cd ..
-        echo "✅ ZIP archive created"
-
-    - name: Generate checksums
-      run: |
-        sha256sum google-calendar-declined-events-toggle-v${{ steps.version.outputs.version }}.zip > checksums.txt
-        echo "✅ Checksums generated"
-
-    - name: Create Release
-      uses: softprops/action-gh-release@v1
-      with:
-        files: |
-          google-calendar-declined-events-toggle-v${{ steps.version.outputs.version }}.zip
-          checksums.txt
-        body: |
-          ## Installation
-
-          1. Download the ZIP file below
-          2. Unzip the archive
-          3. Go to `chrome://extensions/`
-          4. Enable "Developer mode"
-          5. Click "Load unpacked" and select the unzipped folder
-
-          ## What's New
-
-          See [CHANGELOG.md](CHANGELOG.md) for details.
-
-          ## Verification
-
-          Verify the integrity of the download:
-          ```bash
-          sha256sum google-calendar-declined-events-toggle-v${{ steps.version.outputs.version }}.zip
-          ```
-          Compare with `checksums.txt`
-        draft: false
-        prerelease: false
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-    - name: Upload artifacts
-      uses: actions/upload-artifact@v4
-      with:
-        name: extension-package-v${{ steps.version.outputs.version }}
-        path: |
-          google-calendar-declined-events-toggle-v${{ steps.version.outputs.version }}.zip
-          checksums.txt
-        retention-days: 90
-
-    # Publishes the same package to the Chrome Web Store. Skipped
-    # automatically until CHROME_CLIENT_ID (and the other CHROME_* secrets)
-    # are configured in the repo's Actions secrets — see PRIVACY.md's
-    # neighbor, the "Releasing" section in README.md, for setup steps.
-    - name: Publish to Chrome Web Store
-      if: ${{ secrets.CHROME_CLIENT_ID != '' }}
-      env:
-        CHROME_EXTENSION_ID: ${{ secrets.CHROME_EXTENSION_ID }}
-        CHROME_CLIENT_ID: ${{ secrets.CHROME_CLIENT_ID }}
-        CHROME_CLIENT_SECRET: ${{ secrets.CHROME_CLIENT_SECRET }}
-        CHROME_REFRESH_TOKEN: ${{ secrets.CHROME_REFRESH_TOKEN }}
-      run: |
-        npx --yes chrome-webstore-upload-cli upload \
-          --source google-calendar-declined-events-toggle-v${{ steps.version.outputs.version }}.zip \
-          --extension-id "$CHROME_EXTENSION_ID" \
-          --client-id "$CHROME_CLIENT_ID" \
-          --client-secret "$CHROME_CLIENT_SECRET" \
-          --refresh-token "$CHROME_REFRESH_TOKEN"
-        npx --yes chrome-webstore-upload-cli publish \
-          --extension-id "$CHROME_EXTENSION_ID" \
-          --client-id "$CHROME_CLIENT_ID" \
-          --client-secret "$CHROME_CLIENT_SECRET" \
-          --refresh-token "$CHROME_REFRESH_TOKEN"
+  release:
+    uses: ./.github/workflows/build-and-publish.yml
+    with:
+      version: ${{ github.ref_name }}
+    secrets: inherit
